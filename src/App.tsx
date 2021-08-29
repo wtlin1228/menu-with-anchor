@@ -10,8 +10,8 @@ function App() {
   return (
     <CategoryAnchorManagerProvider>
       <div className="relative min-h-screen">
+        <Header />
         <div className="container max-w-md min-h-screen mx-auto">
-          <Header />
           <Menu />
           <Footer />
         </div>

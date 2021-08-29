@@ -7,7 +7,7 @@ const Footer = () => {
 
   return (
     <footer className="pt-10 pb-32">
-      <div className="flex space-x-6">
+      <div className="flex px-4 space-x-6">
         <div className="flex-none w-12 h-12 overflow-hidden rounded-full">
           <img
             alt="profile"

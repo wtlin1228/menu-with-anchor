@@ -20,7 +20,7 @@ const MenuCategoryHeader = ({ categoryId, title }: ICategoryHeaderProps) => {
   }, [categoryId, registerCategoryAnchor, unregisterCategoryAnchor])
 
   return (
-    <p ref={ref} id={categoryId} className="py-4 pl-2 text-lg bg-gray-200">
+    <p ref={ref} className="py-4 pl-2 text-lg bg-gray-200">
       {title}
     </p>
   )

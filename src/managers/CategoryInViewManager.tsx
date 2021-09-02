@@ -36,10 +36,14 @@ export const CategoryInViewManagerProvider = ({
     [subject]
   )
 
-  const manager = {
-    handleCategoryInView,
-    topCategory$: subject,
-  }
+  const manager = useMemo(
+    () => ({
+      handleCategoryInView,
+      topCategory$: subject,
+    }),
+    [handleCategoryInView, subject]
+  )
+
   return (
     <CategoryInViewManagerContext.Provider value={manager}>
       {children}

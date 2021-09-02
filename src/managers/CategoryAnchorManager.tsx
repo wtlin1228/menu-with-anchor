@@ -1,5 +1,5 @@
-import { useContext, useRef, ReactNode } from 'react'
-import { createContext } from 'react'
+import { createContext, useContext, useRef, useMemo, useCallback } from 'react'
+import type { ReactNode } from 'react'
 
 interface ICategoryAnchorManagerContext {
   registerCategoryAnchor: (anchorId: string, ref: Element) => void
@@ -26,15 +26,18 @@ export const CategoryAnchorManagerProvider = ({
 }: ICategoryAnchorManagerProviderProps) => {
   const anchorRegistry = useRef<Record<string, Element | undefined>>({})
 
-  const registerCategoryAnchor = (anchorId: string, ref: Element): void => {
-    anchorRegistry.current[anchorId] = ref
-  }
+  const registerCategoryAnchor = useCallback(
+    (anchorId: string, ref: Element): void => {
+      anchorRegistry.current[anchorId] = ref
+    },
+    []
+  )
 
-  const unregisterCategoryAnchor = (anchorId: string): void => {
+  const unregisterCategoryAnchor = useCallback((anchorId: string): void => {
     anchorRegistry.current[anchorId] = undefined
-  }
+  }, [])
 
-  const getCategoryAnchor = (anchorId: string): Element | null => {
+  const getCategoryAnchor = useCallback((anchorId: string): Element | null => {
     const anchor = anchorRegistry.current[anchorId]
 
     if (!anchor) {
@@ -42,13 +45,17 @@ export const CategoryAnchorManagerProvider = ({
     }
 
     return anchor
-  }
+  }, [])
 
-  const manager = {
-    registerCategoryAnchor,
-    unregisterCategoryAnchor,
-    getCategoryAnchor,
-  }
+  const manager = useMemo(
+    () => ({
+      registerCategoryAnchor,
+      unregisterCategoryAnchor,
+      getCategoryAnchor,
+    }),
+    [registerCategoryAnchor, unregisterCategoryAnchor, getCategoryAnchor]
+  )
+
   return (
     <CategoryAnchorManagerContext.Provider value={manager}>
       {children}

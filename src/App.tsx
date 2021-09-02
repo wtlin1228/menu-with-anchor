@@ -1,4 +1,7 @@
-import { CategoryAnchorManagerProvider } from './managers'
+import {
+  CategoryAnchorManagerProvider,
+  CategoryInViewManagerProvider,
+} from './managers'
 
 import Header from './components/Header'
 import Menu from './components/Menu'
@@ -9,13 +12,15 @@ function App() {
 
   return (
     <CategoryAnchorManagerProvider>
-      <div className="relative min-h-screen">
-        <Header />
-        <div className="container max-w-md min-h-screen mx-auto">
-          <Menu />
-          <Footer />
+      <CategoryInViewManagerProvider>
+        <div className="relative min-h-screen">
+          <Header />
+          <div className="container max-w-md min-h-screen mx-auto">
+            <Menu />
+            <Footer />
+          </div>
         </div>
-      </div>
+      </CategoryInViewManagerProvider>
     </CategoryAnchorManagerProvider>
   )
 }

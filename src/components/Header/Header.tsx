@@ -1,9 +1,21 @@
+import { useState, useEffect } from 'react'
+
 import { data } from '../../data'
+import { useCategoryInViewManager } from '../../managers'
 
 import HeaderCategoryChip from './HeaderCategoryChip'
 
 const Header = () => {
   console.log('Header rerender')
+
+  const [activeCategoryUuid, setActiveCategoryUuid] = useState<string>('')
+
+  const { topCategory$ } = useCategoryInViewManager()
+
+  useEffect(() => {
+    const subscription = topCategory$.subscribe(setActiveCategoryUuid)
+    return () => subscription.unsubscribe()
+  }, [topCategory$])
 
   return (
     <header className="fixed top-0 w-full pt-10 pb-3 bg-white">
@@ -22,6 +34,7 @@ const Header = () => {
               categoryId={id}
               title={title}
               isFirst={index === 0}
+              isActive={id === activeCategoryUuid}
             />
           ))}
         </div>

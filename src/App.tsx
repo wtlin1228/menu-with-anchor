@@ -1,5 +1,6 @@
 import {
   CategoryAnchorManagerProvider,
+  CategoryChipPositionManagerProvider,
   CategoryInViewManagerProvider,
 } from './managers'
 
@@ -12,15 +13,17 @@ function App() {
 
   return (
     <CategoryAnchorManagerProvider>
-      <CategoryInViewManagerProvider>
-        <div className="relative min-h-screen">
-          <Header />
-          <div className="container max-w-md min-h-screen mx-auto">
-            <Menu />
-            <Footer />
+      <CategoryChipPositionManagerProvider>
+        <CategoryInViewManagerProvider>
+          <div className="relative min-h-screen">
+            <Header />
+            <div className="container max-w-md min-h-screen mx-auto">
+              <Menu />
+              <Footer />
+            </div>
           </div>
-        </div>
-      </CategoryInViewManagerProvider>
+        </CategoryInViewManagerProvider>
+      </CategoryChipPositionManagerProvider>
     </CategoryAnchorManagerProvider>
   )
 }

@@ -1,0 +1,36 @@
+import { useRef, useEffect } from 'react'
+
+export default function useMenuCategoryInView({
+  callback = () => {},
+  reset,
+}: {
+  callback: () => void
+  reset: object
+}) {
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          callback()
+        }
+      },
+      {
+        rootMargin: `-144px 0px -${window.innerHeight - 144 - 30}px 0px`,
+        threshold: 0,
+      }
+    )
+
+    const target = ref.current
+    if (target) {
+      observer.observe(target)
+    }
+    return () => {
+      if (target) {
+        observer.unobserve(target)
+      }
+    }
+  }, [callback, reset])
+
+  return { ref }
+}

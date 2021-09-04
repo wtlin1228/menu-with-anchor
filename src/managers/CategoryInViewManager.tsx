@@ -1,10 +1,12 @@
 import { Subject } from 'rxjs'
 
-import { useCallback, useContext, useMemo, ReactNode } from 'react'
+import { useRef, useCallback, useContext, useMemo, ReactNode } from 'react'
 import { createContext } from 'react'
 
 interface ICategoryInViewManagerContext {
-  handleCategoryInView: (categoryUuid: string) => void
+  handleCategoryInView: (categoryId: string) => void
+  registerForceRerenderFn: (fn: () => void) => void
+  executeForceRerenderFn: () => void
   topCategory$: Subject<string>
 }
 
@@ -25,23 +27,40 @@ interface ICategoryInViewManagerProviderProps {
 export const CategoryInViewManagerProvider = ({
   children,
 }: ICategoryInViewManagerProviderProps) => {
+  const forceRerenderFnRef = useRef<() => void>(() => {})
+
   const subject = useMemo(() => {
     return new Subject<string>()
   }, [])
 
   const handleCategoryInView = useCallback(
-    (categoryUuid: string) => {
-      subject.next(categoryUuid)
+    (categoryId: string) => {
+      subject.next(categoryId)
     },
     [subject]
   )
 
+  const registerForceRerenderFn = useCallback((fn) => {
+    forceRerenderFnRef.current = fn
+  }, [])
+
+  const executeForceRerenderFn = useCallback(() => {
+    forceRerenderFnRef.current()
+  }, [])
+
   const manager = useMemo(
     () => ({
       handleCategoryInView,
+      registerForceRerenderFn,
+      executeForceRerenderFn,
       topCategory$: subject,
     }),
-    [handleCategoryInView, subject]
+    [
+      handleCategoryInView,
+      registerForceRerenderFn,
+      executeForceRerenderFn,
+      subject,
+    ]
   )
 
   return (

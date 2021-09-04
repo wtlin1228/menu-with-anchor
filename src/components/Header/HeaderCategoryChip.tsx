@@ -1,5 +1,6 @@
 import { useCategoryAnchorManager } from '../../managers'
 import { scrollWindowVerticallyTo } from '../../utils'
+import usePositionRegister from '../../hooks/usePositionRegister'
 
 const HEADER_OFFSET = 144
 
@@ -22,6 +23,10 @@ interface IHeaderCategoryChipProps {
   title: string
   isFirst: boolean
   isActive: boolean
+  onAutoScrollingStart: () => void
+  onAutoScrollingEnd: () => void
+  handleChipsBoxScrollTo: (categoryId: string) => void
+  setActiveCategoryId: (categoryId: string) => void
 }
 
 const HeaderCategoryChip = ({
@@ -29,22 +34,37 @@ const HeaderCategoryChip = ({
   title,
   isFirst,
   isActive,
+  onAutoScrollingStart,
+  onAutoScrollingEnd,
+  handleChipsBoxScrollTo,
+  setActiveCategoryId,
 }: IHeaderCategoryChipProps) => {
+  const { ref } = usePositionRegister(categoryId)
+
   const { getCategoryAnchor } = useCategoryAnchorManager()
 
-  const handleClick = () => {
+  const handleMenuScrollTo = async (categoryId: string) => {
     const anchor = getCategoryAnchor(categoryId)
     if (anchor) {
-      scrollWindowVerticallyTo(anchor, {
+      await scrollWindowVerticallyTo(anchor, {
         verticalOffset: -HEADER_OFFSET + 1, // +1 for not to scroll to the observer margin edge
       })
     }
   }
 
+  const handleClickAsync = async () => {
+    onAutoScrollingStart()
+    setActiveCategoryId(categoryId)
+    await handleMenuScrollTo(categoryId)
+    handleChipsBoxScrollTo(categoryId)
+    onAutoScrollingEnd()
+  }
+
   return (
     <div
+      ref={ref}
       className={getHeaderCategoryChipClassName(isFirst, isActive)}
-      onClick={handleClick}
+      onClick={handleClickAsync}
     >
       {title}
     </div>

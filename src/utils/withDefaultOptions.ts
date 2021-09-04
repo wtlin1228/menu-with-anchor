@@ -15,7 +15,7 @@ const defaultOptions = {
   easing: (t: number): number => --t * t * t + 1, // easeOutCubic
   elementToScroll: window,
   horizontalOffset: 0,
-  maxDuration: 3000,
+  maxDuration: 5000,
   minDuration: 250,
   speed: 500,
   verticalOffset: 0,

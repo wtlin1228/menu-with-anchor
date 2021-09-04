@@ -4,7 +4,7 @@
 
 - Activate and scroll corresponding category chip when scrolling the menu up and down.
 
-  <video src="./demo/demo-scroll-menu.mov" style="height: 500px">
+  ![demo scroll menu](https://media.giphy.com/media/RdYfIIAupS8HTLZHNa/giphy.gif?cid=790b7611f4714a641acb102680bb806b60e5c59b588e893c&rid=giphy.gif&ct=g)
 
 - Reach the bottom
 
@@ -12,7 +12,7 @@
 
   If not -> Always activate the last category chip
 
-  <video src="./demo/demo-scroll-to-bottom.mov" style="height: 500px">
+  ![demo scroll to bottom](https://media.giphy.com/media/U9bPP39OcuIetaYaMx/giphy.gif?cid=790b76115cabc6c4f2c630c282400ca1939822680ad9b74e&rid=giphy.gif&ct=g)
 
 ## Performance
 

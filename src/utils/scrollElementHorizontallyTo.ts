@@ -12,12 +12,13 @@ export const scrollElementHorizontallyTo = (
       "Provide elementToScroll in scrollElementHorizontalTo's userOptions"
     )
   }
-  const elementToScroll = options.elementToScroll as Element
+  const elementToScroll = options.elementToScroll as HTMLElement
 
   const initialHorizontalScroll = elementToScroll.scrollLeft
   const maxHorizontalScroll =
     elementToScroll.scrollWidth - elementToScroll.clientWidth
-  let targetHorizontalScroll = scrollToPositionX + options.horizontalOffset
+  let targetHorizontalScroll =
+    scrollToPositionX + options.horizontalOffset - elementToScroll.offsetLeft
   if (targetHorizontalScroll > maxHorizontalScroll) {
     targetHorizontalScroll = maxHorizontalScroll
   }

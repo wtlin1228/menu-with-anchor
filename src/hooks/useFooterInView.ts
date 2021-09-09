@@ -4,7 +4,7 @@ import { data } from '../data'
 import { useCategoryInViewManager } from '../managers'
 
 export default function useFooterInView() {
-  const { handleCategoryInView, executeForceRerenderFn } =
+  const { handleCategoryInView, handleLeaveBottom, executeForceRerenderFn } =
     useCategoryInViewManager()
 
   const ref = useRef<HTMLElement>(null)
@@ -13,8 +13,12 @@ export default function useFooterInView() {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.intersectionRatio === 1) {
-          handleCategoryInView(data[data.length - 1].id)
+          handleCategoryInView(
+            /* categoryId */ data[data.length - 1].id,
+            /* isInBottom */ true
+          )
         } else {
+          handleLeaveBottom()
           executeForceRerenderFn()
         }
       },
@@ -32,7 +36,7 @@ export default function useFooterInView() {
         observer.unobserve(target)
       }
     }
-  }, [handleCategoryInView, executeForceRerenderFn])
+  }, [handleCategoryInView, handleLeaveBottom, executeForceRerenderFn])
 
   return { ref }
 }

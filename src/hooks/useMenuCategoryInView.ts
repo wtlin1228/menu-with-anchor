@@ -16,7 +16,7 @@ export default function useMenuCategoryInView({
         }
       },
       {
-        rootMargin: `-144px 0px -${window.innerHeight - 144 - 30}px 0px`,
+        rootMargin: `-144px 0px ${-window.innerHeight + 144 + 1}px 0px`,
         threshold: 0,
       }
     )
@@ -30,7 +30,7 @@ export default function useMenuCategoryInView({
         observer.unobserve(target)
       }
     }
-  }, [callback, reset])
+  }, [callback, reset]) // TODO: should not use dependency to implement business logic
 
   return { ref }
 }

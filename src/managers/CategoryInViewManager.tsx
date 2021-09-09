@@ -4,7 +4,8 @@ import { useRef, useCallback, useContext, useMemo, ReactNode } from 'react'
 import { createContext } from 'react'
 
 interface ICategoryInViewManagerContext {
-  handleCategoryInView: (categoryId: string) => void
+  handleCategoryInView: (categoryId: string, isInBottom?: boolean) => void
+  handleLeaveBottom: () => void
   registerForceRerenderFn: (fn: () => void) => void
   executeForceRerenderFn: () => void
   topCategory$: Subject<string>
@@ -28,15 +29,23 @@ export const CategoryInViewManagerProvider = ({
   children,
 }: ICategoryInViewManagerProviderProps) => {
   const forceRerenderFnRef = useRef<() => void>(() => {})
-
+  const isInBottomRef = useRef<boolean>(false)
   const subjectRef = useRef(new Subject<string>())
 
   const handleCategoryInView = useCallback(
-    (categoryId: string) => {
-      subjectRef.current.next(categoryId)
+    (categoryId: string, isInBottom: boolean = false) => {
+      if (!isInBottomRef.current) {
+        subjectRef.current.next(categoryId)
+      }
+
+      isInBottomRef.current = isInBottom
     },
     [subjectRef]
   )
+
+  const handleLeaveBottom = useCallback(() => {
+    isInBottomRef.current = false
+  }, [])
 
   const registerForceRerenderFn = useCallback((fn) => {
     forceRerenderFnRef.current = fn
@@ -49,12 +58,14 @@ export const CategoryInViewManagerProvider = ({
   const manager = useMemo(
     () => ({
       handleCategoryInView,
+      handleLeaveBottom,
       registerForceRerenderFn,
       executeForceRerenderFn,
       topCategory$: subjectRef.current,
     }),
     [
       handleCategoryInView,
+      handleLeaveBottom,
       registerForceRerenderFn,
       executeForceRerenderFn,
       subjectRef,

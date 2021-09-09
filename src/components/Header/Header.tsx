@@ -5,7 +5,7 @@ import {
   useCategoryChipPositionManager,
   useCategoryInViewManager,
 } from '../../managers'
-import { scrollElementHorizontallyTo } from '../../utils/scrollElementHorizontallyTo'
+import { scrollElementHorizontallyTo } from '../../utils'
 
 import HeaderCategoryChip from './HeaderCategoryChip'
 

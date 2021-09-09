@@ -16,6 +16,7 @@ export default function useMenuCategoryInView({
         }
       },
       {
+        // Watch for changes only in the 1px below Header
         rootMargin: `-144px 0px ${-window.innerHeight + 144 + 1}px 0px`,
         threshold: 0,
       }

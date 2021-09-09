@@ -29,13 +29,13 @@ export const CategoryInViewManagerProvider = ({
 }: ICategoryInViewManagerProviderProps) => {
   const forceRerenderFnRef = useRef<() => void>(() => {})
 
-  const subject = useRef(new Subject<string>())
+  const subjectRef = useRef(new Subject<string>())
 
   const handleCategoryInView = useCallback(
     (categoryId: string) => {
-      subject.current.next(categoryId)
+      subjectRef.current.next(categoryId)
     },
-    [subject]
+    [subjectRef]
   )
 
   const registerForceRerenderFn = useCallback((fn) => {
@@ -51,13 +51,13 @@ export const CategoryInViewManagerProvider = ({
       handleCategoryInView,
       registerForceRerenderFn,
       executeForceRerenderFn,
-      topCategory$: subject.current,
+      topCategory$: subjectRef.current,
     }),
     [
       handleCategoryInView,
       registerForceRerenderFn,
       executeForceRerenderFn,
-      subject,
+      subjectRef,
     ]
   )
 

@@ -44,7 +44,8 @@
     ]
   },
   "volta": {
-    "node": "14.17.5"
+    "node": "14.17.5",
+    "yarn": "1.22.15"
   },
   "devDependencies": {
     "autoprefixer": "9.8.6",

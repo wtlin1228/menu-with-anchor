@@ -1,28 +1,18 @@
 import { data, IItem } from '../../data'
 import { formatIssued } from '../../utils'
 
-import { useCategoryInViewManager } from '../../managers'
-
 import useMenuCategoryInView from '../../hooks/useMenuCategoryInView'
 
 import MenuCategoryHeader from './MenuCategoryHeader'
-import { useState } from 'react'
-import { useEffect } from 'react'
 
 interface IMenuCategory {
   categoryId: string
   title: string
   items: IItem[]
-  reset: object
 }
 
-const MenuCategory = ({ categoryId, title, items, reset }: IMenuCategory) => {
-  const { handleCategoryInView } = useCategoryInViewManager()
-
-  const { ref } = useMenuCategoryInView({
-    callback: () => handleCategoryInView(categoryId),
-    reset,
-  })
+const MenuCategory = ({ categoryId, title, items }: IMenuCategory) => {
+  const { ref } = useMenuCategoryInView(categoryId)
 
   return (
     <div ref={ref} id={categoryId}>
@@ -53,22 +43,10 @@ const MenuCategory = ({ categoryId, title, items, reset }: IMenuCategory) => {
 const Menu = () => {
   console.log('Menu rerender')
 
-  const [reset, forceRerender] = useState<object>({})
-  const { registerForceRerenderFn } = useCategoryInViewManager()
-  useEffect(() => {
-    registerForceRerenderFn(() => forceRerender({}))
-  }, [registerForceRerenderFn, forceRerender])
-
   return (
     <div id="id-menu" className="bg-gray-50 mt-36">
       {data.map(({ id, title, items }) => (
-        <MenuCategory
-          key={id}
-          categoryId={id}
-          title={title}
-          items={items}
-          reset={reset}
-        />
+        <MenuCategory key={id} categoryId={id} title={title} items={items} />
       ))}
     </div>
   )

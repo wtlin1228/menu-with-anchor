@@ -8,7 +8,4 @@ export {
   useCategoryChipPositionManager,
 } from './CategoryChipPositionManager'
 
-export {
-  CategoryInViewManagerProvider,
-  useCategoryInViewManager,
-} from './CategoryInViewManager'
+export { SubjectsManagerProvider, useSubjectsManager } from './SubjectsManager'

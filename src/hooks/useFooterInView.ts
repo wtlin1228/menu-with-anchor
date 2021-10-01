@@ -1,25 +1,20 @@
 import { useRef, useEffect } from 'react'
 
-import { data } from '../data'
-import { useCategoryInViewManager } from '../managers'
+import { useSubjectsManager } from '../managers'
+import { SUBJECT_KEY } from '../constants'
 
 export default function useFooterInView() {
-  const { handleCategoryInView, handleLeaveBottom, executeForceRerenderFn } =
-    useCategoryInViewManager()
-
   const ref = useRef<HTMLElement>(null)
+
+  const { nextValue } = useSubjectsManager()
 
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.intersectionRatio === 1) {
-          handleCategoryInView(
-            /* categoryId */ data[data.length - 1].id,
-            /* isInBottom */ true
-          )
+          nextValue(SUBJECT_KEY.footerInView$, true)
         } else {
-          handleLeaveBottom()
-          executeForceRerenderFn()
+          nextValue(SUBJECT_KEY.footerInView$, false)
         }
       },
       {
@@ -36,7 +31,7 @@ export default function useFooterInView() {
         observer.unobserve(target)
       }
     }
-  }, [handleCategoryInView, handleLeaveBottom, executeForceRerenderFn])
+  }, [nextValue])
 
   return { ref }
 }

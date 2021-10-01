@@ -1,18 +1,29 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useState } from 'react'
+import { useSubjectsManager } from '../managers'
+import { SUBJECT_KEY } from '../constants'
 
-export default function useMenuCategoryInView({
-  callback = () => {},
-  reset,
-}: {
-  callback: () => void
-  reset: object
-}) {
+export default function useMenuCategoryInView(categoryId: string) {
   const ref = useRef<HTMLDivElement>(null)
+  const [isFooterInView, setIsFooterInView] = useState<boolean>(false)
+
+  const { nextValue, subscribe } = useSubjectsManager()
+
+  useEffect(() => {
+    const unsubscribe = subscribe(
+      SUBJECT_KEY.footerInView$,
+      (isFooterInView) => {
+        setIsFooterInView(isFooterInView)
+      }
+    )
+
+    return unsubscribe
+  }, [subscribe])
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          callback()
+          nextValue(SUBJECT_KEY.topCategory$, categoryId)
         }
       },
       {
@@ -23,7 +34,7 @@ export default function useMenuCategoryInView({
     )
 
     const target = ref.current
-    if (target) {
+    if (target && !isFooterInView) {
       observer.observe(target)
     }
     return () => {
@@ -31,7 +42,7 @@ export default function useMenuCategoryInView({
         observer.unobserve(target)
       }
     }
-  }, [callback, reset]) // TODO: should not use dependency to implement business logic
+  }, [categoryId, nextValue, isFooterInView])
 
   return { ref }
 }

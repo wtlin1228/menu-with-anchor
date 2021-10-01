@@ -1,7 +1,7 @@
 import {
+  SubjectsManagerProvider,
   CategoryAnchorManagerProvider,
   CategoryChipPositionManagerProvider,
-  CategoryInViewManagerProvider,
 } from './managers'
 
 import Header from './components/Header'
@@ -12,9 +12,9 @@ function App() {
   console.log('App rerender')
 
   return (
-    <CategoryAnchorManagerProvider>
-      <CategoryChipPositionManagerProvider>
-        <CategoryInViewManagerProvider>
+    <SubjectsManagerProvider>
+      <CategoryAnchorManagerProvider>
+        <CategoryChipPositionManagerProvider>
           <div className="relative min-h-screen">
             <Header />
             <div className="container max-w-md min-h-screen mx-auto">
@@ -22,9 +22,9 @@ function App() {
               <Footer />
             </div>
           </div>
-        </CategoryInViewManagerProvider>
-      </CategoryChipPositionManagerProvider>
-    </CategoryAnchorManagerProvider>
+        </CategoryChipPositionManagerProvider>
+      </CategoryAnchorManagerProvider>
+    </SubjectsManagerProvider>
   )
 }
 

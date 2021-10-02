@@ -1,7 +1,9 @@
+import { useEffect, useRef } from 'react'
+
 import { data, IItem } from '../../data'
 import { formatIssued } from '../../utils'
-
-import useMenuCategoryInView from '../../hooks/useMenuCategoryInView'
+import { useScrollSpyManager } from '../../managers'
+import { SCROLL_SPY_GROUP } from '../../constants'
 
 import MenuCategoryHeader from './MenuCategoryHeader'
 
@@ -12,29 +14,49 @@ interface IMenuCategory {
 }
 
 const MenuCategory = ({ categoryId, title, items }: IMenuCategory) => {
-  const { ref } = useMenuCategoryInView(categoryId)
+  const ref = useRef<HTMLDivElement>(null)
+
+  const { registerScrollSpyTarget } = useScrollSpyManager(
+    SCROLL_SPY_GROUP.category
+  )
+
+  useEffect(() => {
+    const unregister = registerScrollSpyTarget({
+      ref,
+      value: categoryId,
+      options: {
+        // Watch for changes only in the 1px below Header
+        rootMargin: `-144px 0px ${-window.innerHeight + 144 + 1}px 0px`,
+        threshold: 0,
+      },
+    })
+
+    return unregister
+  }, [registerScrollSpyTarget, categoryId])
 
   return (
     <div ref={ref} id={categoryId}>
       <MenuCategoryHeader categoryId={categoryId} title={title} />
       <ul>
-        {items.map(({ id, title, authors, publishers, issued }, index) => (
-          <li key={id}>
-            {index !== 0 && (
-              <span className="block w-full border border-gray-300" />
-            )}
-            <div className="p-2">
-              <p className="font-medium">{title}</p>
-              <p className="text-gray-700">
-                By <span className="font-medium">{authors.join(', ')}</span>
-              </p>
-              <p className="text-gray-500">
-                {publishers.join(', ')}
-                <span className="font-medium"> {formatIssued(issued)}</span>
-              </p>
-            </div>
-          </li>
-        ))}
+        {items
+          .slice(0, 2)
+          .map(({ id, title, authors, publishers, issued }, index) => (
+            <li key={id}>
+              {index !== 0 && (
+                <span className="block w-full border border-gray-300" />
+              )}
+              <div className="p-2">
+                <p className="font-medium">{title}</p>
+                <p className="text-gray-700">
+                  By <span className="font-medium">{authors.join(', ')}</span>
+                </p>
+                <p className="text-gray-500">
+                  {publishers.join(', ')}
+                  <span className="font-medium"> {formatIssued(issued)}</span>
+                </p>
+              </div>
+            </li>
+          ))}
       </ul>
     </div>
   )

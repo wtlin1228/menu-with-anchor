@@ -2,6 +2,7 @@ import {
   SubjectsManagerProvider,
   CategoryAnchorManagerProvider,
   CategoryChipPositionManagerProvider,
+  ScrollSpyMangerProvider,
 } from './managers'
 
 import Header from './components/Header'
@@ -13,17 +14,19 @@ function App() {
 
   return (
     <SubjectsManagerProvider>
-      <CategoryAnchorManagerProvider>
-        <CategoryChipPositionManagerProvider>
-          <div className="relative min-h-screen">
-            <Header />
-            <div className="container max-w-md min-h-screen mx-auto">
-              <Menu />
-              <Footer />
+      <ScrollSpyMangerProvider>
+        <CategoryAnchorManagerProvider>
+          <CategoryChipPositionManagerProvider>
+            <div className="relative min-h-screen">
+              <Header />
+              <div className="container max-w-md min-h-screen mx-auto">
+                <Menu />
+                <Footer />
+              </div>
             </div>
-          </div>
-        </CategoryChipPositionManagerProvider>
-      </CategoryAnchorManagerProvider>
+          </CategoryChipPositionManagerProvider>
+        </CategoryAnchorManagerProvider>
+      </ScrollSpyMangerProvider>
     </SubjectsManagerProvider>
   )
 }

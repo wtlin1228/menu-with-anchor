@@ -1,26 +1,24 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useState, useCallback, useEffect, useRef } from 'react'
 
 import { data } from '../../data'
-import useActiveHeaderCategoryChip from '../../hooks/useActiveHeaderCategoryChip'
-import { useCategoryChipPositionManager } from '../../managers'
+import {
+  useCategoryChipPositionManager,
+  useScrollSpyManager,
+} from '../../managers'
 import { scrollElementHorizontallyTo } from '../../utils'
+import { SCROLL_SPY_GROUP } from '../../constants'
 
 import HeaderCategoryChip from './HeaderCategoryChip'
 
 const Header = () => {
   console.log('Header rerender')
 
-  const { activeCategoryId, setActiveCategoryId, isAutoScrollingRef } =
-    useActiveHeaderCategoryChip()
+  const [activeCategoryId, setActiveCategoryId] = useState<string>('')
+  const isAutoScrollingRef = useRef<boolean>(false)
 
-  const chipsScrollBoxRef = useRef<HTMLDivElement>(null)
-
-  const handleAutoScrollingStart = useCallback(() => {
-    isAutoScrollingRef.current = true
-  }, [isAutoScrollingRef])
-  const handleAutoScrollingEnd = useCallback(() => {
-    isAutoScrollingRef.current = false
-  }, [isAutoScrollingRef])
+  const { registerChangeListener } = useScrollSpyManager(
+    SCROLL_SPY_GROUP.category
+  )
 
   const { getCategoryChipPosition } = useCategoryChipPositionManager()
   const handleChipsBoxScrollTo = useCallback(
@@ -36,8 +34,26 @@ const Header = () => {
   )
 
   useEffect(() => {
-    handleChipsBoxScrollTo(activeCategoryId)
-  }, [activeCategoryId, handleChipsBoxScrollTo])
+    const unregister = registerChangeListener((topEntry: string) => {
+      if (isAutoScrollingRef.current) {
+        return
+      }
+
+      setActiveCategoryId(topEntry)
+      handleChipsBoxScrollTo(topEntry)
+    })
+
+    return unregister
+  }, [handleChipsBoxScrollTo, registerChangeListener, setActiveCategoryId])
+
+  const chipsScrollBoxRef = useRef<HTMLDivElement>(null)
+
+  const handleAutoScrollingStart = useCallback(() => {
+    isAutoScrollingRef.current = true
+  }, [isAutoScrollingRef])
+  const handleAutoScrollingEnd = useCallback(() => {
+    isAutoScrollingRef.current = false
+  }, [isAutoScrollingRef])
 
   return (
     <header className="fixed top-0 w-full pt-10 pb-3 bg-white">

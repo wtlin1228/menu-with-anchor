@@ -9,3 +9,8 @@ export {
 } from './CategoryChipPositionManager'
 
 export { SubjectsManagerProvider, useSubjectsManager } from './SubjectsManager'
+
+export {
+  ScrollSpyMangerProvider,
+  useScrollSpyManager,
+} from './ScrollSpyManager'

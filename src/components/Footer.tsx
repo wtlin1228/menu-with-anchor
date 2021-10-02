@@ -1,12 +1,29 @@
-import useFooterInView from '../hooks/useFooterInView'
+import { useEffect, useRef } from 'react'
 import profileImg from '../images/profile-pic.jpg'
+import { useScrollSpyManager } from '../managers'
+import { SCROLL_SPY_GROUP } from '../constants'
 
 const GITHUB_URL = 'https://github.com/wtlin1228'
 
 const Footer = () => {
   console.log('Footer rerender')
 
-  const { ref } = useFooterInView()
+  const ref = useRef<HTMLElement>(null)
+
+  const { registerScrollSpyFooter } = useScrollSpyManager(
+    SCROLL_SPY_GROUP.category
+  )
+
+  useEffect(() => {
+    const unregister = registerScrollSpyFooter({
+      ref,
+      options: {
+        threshold: 1,
+      },
+    })
+
+    return unregister
+  }, [registerScrollSpyFooter])
 
   return (
     <footer ref={ref} className="pt-10 pb-32">

@@ -1,4 +1,3 @@
-export const SUBJECT_KEY = {
-  footerInView$: 'footerInView$',
-  topCategory$: 'topCategory$',
+export const SCROLL_SPY_GROUP = {
+  category: 'category',
 }

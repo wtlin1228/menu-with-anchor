@@ -9,6 +9,6 @@ export {
 } from './CategoryChipPositionManager'
 
 export {
-  CategoryInViewManagerProvider,
-  useCategoryInViewManager,
-} from './CategoryInViewManager'
+  ScrollSpyGroupManagerProvider,
+  useScrollSpyGroupManager,
+} from './ScrollSpyGroupManager'

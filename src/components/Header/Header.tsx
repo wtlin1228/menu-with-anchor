@@ -1,10 +1,9 @@
-import { useCallback, useState, useEffect, useRef } from 'react'
+import { useCallback, useState, useEffect, useRef, useMemo } from 'react'
+import { scrollSpyGroup } from '../../constants/scrollSpyGroups'
 
 import { data } from '../../data'
-import {
-  useCategoryChipPositionManager,
-  useCategoryInViewManager,
-} from '../../managers'
+import useSubscribeToScrollSpyGroup from '../../hooks/useSubscribeToScrollSpyGroup'
+import { useCategoryChipPositionManager } from '../../managers'
 import { scrollElementHorizontallyTo } from '../../utils'
 
 import HeaderCategoryChip from './HeaderCategoryChip'
@@ -13,19 +12,38 @@ const Header = () => {
   console.log('Header rerender')
 
   const chipsScrollBoxRef = useRef<HTMLDivElement>(null)
-  const [activeCategoryId, setActiveCategoryId] = useState<string>('')
 
+  const [activeCategoryId, setActiveCategoryId] = useState('')
+  const activeCategoryIdRef = useRef<string>('')
   const isAutoScrollingRef = useRef<boolean>(false)
-  const handleAutoScrollingStart = useCallback(() => {
-    isAutoScrollingRef.current = true
-  }, [])
-  const handleAutoScrollingEnd = useCallback(() => {
-    isAutoScrollingRef.current = false
-  }, [])
+
+  const options = useMemo(() => {
+    const callback = (topEntry: string) => {
+      if (isAutoScrollingRef.current) {
+        return
+      }
+
+      if (topEntry && topEntry !== activeCategoryIdRef.current) {
+        activeCategoryIdRef.current = topEntry
+        setActiveCategoryId(topEntry)
+      }
+    }
+
+    const lastCategoryUuid = data[data.length - 1]?.id
+
+    return {
+      groupName: scrollSpyGroup.bookCategories,
+      callback,
+      valueToBeEmittedWhenFooterInView: lastCategoryUuid,
+    }
+    // I leave data here since we will get data from api response.
+    // So the data will be changed.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data])
+
+  useSubscribeToScrollSpyGroup(options)
 
   const { getCategoryChipPosition } = useCategoryChipPositionManager()
-
-  // useCallback to prevent keep subscribing and unsubscribing to topCategory$
   const handleChipsBoxScrollTo = useCallback(
     (categoryId) => {
       const positionX = getCategoryChipPosition(categoryId)
@@ -38,30 +56,24 @@ const Header = () => {
     [getCategoryChipPosition]
   )
 
-  const { topCategory$ } = useCategoryInViewManager()
+  const handleAutoScrollingStart = useCallback(() => {
+    isAutoScrollingRef.current = true
+  }, [isAutoScrollingRef])
+  const handleAutoScrollingEnd = useCallback(() => {
+    isAutoScrollingRef.current = false
+  }, [isAutoScrollingRef])
 
-  // subscribe to topCategory$ and activate corresponding category chip
   useEffect(() => {
-    const subscription = topCategory$.subscribe((categoryId) => {
-      if (isAutoScrollingRef.current) {
-        return
-      }
-      setActiveCategoryId(categoryId)
-    })
-    return () => subscription.unsubscribe()
-  }, [topCategory$])
+    if (!activeCategoryId) {
+      return
+    }
 
-  // subscribe to topCategory$ and scroll to corresponding category chip horizontally
-  useEffect(() => {
-    const subscription = topCategory$.subscribe((categoryId) => {
-      if (isAutoScrollingRef.current) {
-        return
-      }
-
-      handleChipsBoxScrollTo(categoryId)
-    })
-    return () => subscription.unsubscribe()
-  }, [topCategory$, handleChipsBoxScrollTo])
+    // To avoid the earlier "scroll" being canceled since two
+    // "scroll"s happened in the same time.
+    setTimeout(() => {
+      handleChipsBoxScrollTo(activeCategoryId)
+    }, 0)
+  }, [activeCategoryId, handleChipsBoxScrollTo])
 
   return (
     <header className="fixed top-0 w-full pt-10 pb-3 bg-white">

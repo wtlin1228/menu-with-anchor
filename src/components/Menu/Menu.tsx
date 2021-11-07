@@ -1,28 +1,40 @@
 import { data, IItem } from '../../data'
 import { formatIssued } from '../../utils'
 
-import { useCategoryInViewManager } from '../../managers'
-
-import useMenuCategoryInView from '../../hooks/useMenuCategoryInView'
+import { useScrollSpyGroupManager } from '../../managers'
 
 import MenuCategoryHeader from './MenuCategoryHeader'
-import { useState } from 'react'
+import { useRef } from 'react'
 import { useEffect } from 'react'
+import { scrollSpyGroup } from '../../constants/scrollSpyGroups'
 
 interface IMenuCategory {
   categoryId: string
   title: string
   items: IItem[]
-  reset: object
 }
 
-const MenuCategory = ({ categoryId, title, items, reset }: IMenuCategory) => {
-  const { handleCategoryInView } = useCategoryInViewManager()
+const MenuCategory = ({ categoryId, title, items }: IMenuCategory) => {
+  const ref = useRef(null)
+  const { spyTargetWithIntersectionObserver } = useScrollSpyGroupManager()
+  useEffect(() => {
+    if (!ref.current) {
+      return () => {}
+    }
 
-  const { ref } = useMenuCategoryInView({
-    callback: () => handleCategoryInView(categoryId),
-    reset,
-  })
+    const unSpy = spyTargetWithIntersectionObserver({
+      groupName: scrollSpyGroup.bookCategories,
+      target: ref.current,
+      options: {
+        // Watch for changes only in the 1px below Header
+        rootMargin: `-144px 0px ${-window.innerHeight + 144 + 1}px 0px`,
+        threshold: 0,
+      },
+      valueToBeEmitted: categoryId,
+    })
+
+    return unSpy
+  }, [categoryId, spyTargetWithIntersectionObserver])
 
   return (
     <div ref={ref} id={categoryId}>
@@ -53,22 +65,10 @@ const MenuCategory = ({ categoryId, title, items, reset }: IMenuCategory) => {
 const Menu = () => {
   console.log('Menu rerender')
 
-  const [reset, forceRerender] = useState<object>({})
-  const { registerForceRerenderFn } = useCategoryInViewManager()
-  useEffect(() => {
-    registerForceRerenderFn(() => forceRerender({}))
-  }, [registerForceRerenderFn, forceRerender])
-
   return (
     <div id="id-menu" className="bg-gray-50 mt-36">
       {data.map(({ id, title, items }) => (
-        <MenuCategory
-          key={id}
-          categoryId={id}
-          title={title}
-          items={items}
-          reset={reset}
-        />
+        <MenuCategory key={id} categoryId={id} title={title} items={items} />
       ))}
     </div>
   )

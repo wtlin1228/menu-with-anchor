@@ -1,7 +1,7 @@
 import {
   CategoryAnchorManagerProvider,
   CategoryChipPositionManagerProvider,
-  CategoryInViewManagerProvider,
+  ScrollSpyGroupManagerProvider,
 } from './managers'
 
 import Header from './components/Header'
@@ -14,7 +14,7 @@ function App() {
   return (
     <CategoryAnchorManagerProvider>
       <CategoryChipPositionManagerProvider>
-        <CategoryInViewManagerProvider>
+        <ScrollSpyGroupManagerProvider>
           <div className="relative min-h-screen">
             <Header />
             <div className="container max-w-md min-h-screen mx-auto">
@@ -22,7 +22,7 @@ function App() {
               <Footer />
             </div>
           </div>
-        </CategoryInViewManagerProvider>
+        </ScrollSpyGroupManagerProvider>
       </CategoryChipPositionManagerProvider>
     </CategoryAnchorManagerProvider>
   )

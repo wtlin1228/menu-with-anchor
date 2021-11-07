@@ -1,12 +1,27 @@
-import useFooterInView from '../hooks/useFooterInView'
+import { useEffect, useRef } from 'react'
+import { scrollSpyGroup } from '../constants/scrollSpyGroups'
 import profileImg from '../images/profile-pic.jpg'
+import { useScrollSpyGroupManager } from '../managers'
 
 const GITHUB_URL = 'https://github.com/wtlin1228'
 
 const Footer = () => {
   console.log('Footer rerender')
 
-  const { ref } = useFooterInView()
+  const ref = useRef(null)
+  const { spyFooterWithIntersectionObserver } = useScrollSpyGroupManager()
+  useEffect(() => {
+    if (!ref.current) {
+      return () => {}
+    }
+
+    const unSpy = spyFooterWithIntersectionObserver({
+      groupName: scrollSpyGroup.bookCategories,
+      target: ref.current,
+    })
+
+    return unSpy
+  }, [spyFooterWithIntersectionObserver])
 
   return (
     <footer ref={ref} className="pt-10 pb-32">

@@ -1,7 +1,13 @@
 import { BehaviorSubject } from 'rxjs'
 
-import { useRef, useCallback, useContext, useMemo, ReactNode } from 'react'
-import { createContext } from 'react'
+import {
+  createContext,
+  useRef,
+  useCallback,
+  useContext,
+  useMemo,
+  ReactNode,
+} from 'react'
 
 interface ISpyTargetWithIntersectionObserverInput {
   groupName: string
